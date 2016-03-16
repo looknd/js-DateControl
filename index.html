@@ -15,23 +15,4 @@
 <script type="text/javascript" src="js/jquery.js"></script>
 <script type="text/javascript" src="js/times.js"></script>
 
-<SCRIPT language="JavaScript">
-	var i_startEnd="";
-	$("#i_id").mouseover(function () { this.focus() ;});
-	$("#i_id").mouseout(function () { this.blur() ;});
-	//点击事件
-	$("#i_id").click(function (){
-		i_startEnd=$("input[name=inlineRadioOptions]:checked").attr("value")
-		$("#sucaijiayuan").show();
-		rebuild();    
-	});
-	$("#t_body").append(i_tr);
-	//选择时间类型，如果已选中，则关闭
-	$("input[name=inlineRadioOptions]").click(function (){
-		if(!$("#sucaijiayuan").is(":hidden")){
-			$("#sucaijiayuan").hide();
-
-		}
-	});
-</SCRIPT>
 </html>

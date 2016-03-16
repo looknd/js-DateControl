@@ -515,14 +515,16 @@ var i_size=0;
 //日期点击函数
 function mOck(thisObj, v) {
 
-    if(i_startEnd=="TP"){//时间点
-        var onoff = thisObj.attributes["on"].value;//获取所以属性，判断是否on的属性
+    
+    var dayJson = "";
+    
+    function mOclApi(){
         var dayContainer = thisObj.getElementsByTagName("font")[0];//获取tr里面公历的日期 
         //记录是否为周末
         var lx = '0';
         var nian = $('#nian').text();//当前年
         var yue = $('#yue').text();//当前月
-        var dayJson = "";
+       
         var day = dayContainer.innerHTML;//当前日
         var dayColor = dayContainer.attributes["color"];//如果是红色代表就是周末，没有就是工作日
         var dayF = nian + '/' + addZ(yue) + '/' + addZ(day);
@@ -531,7 +533,11 @@ function mOck(thisObj, v) {
             lx = '1';
         }
         dayJson = nian + addZ(yue) + addZ(day) ;
-        
+    }
+    
+    if(i_startEnd=="TP"){//时间点
+        mOclApi();
+        var onoff = thisObj.attributes["on"].value;//获取所以属性，判断是否on的属性
         if (onoff == '0') {
             //没有选中
             thisObj.setAttribute("class", "selday");
@@ -545,42 +551,24 @@ function mOck(thisObj, v) {
         }
     }
     if(i_startEnd=="TR"){//时间段
-
-        if(i_size<2){
-            var onoff = thisObj.attributes["on"].value;//获取所以属性，判断是否on的属性
-            var dayContainer = thisObj.getElementsByTagName("font")[0];//获取tr里面公历的日期 
-            //记录是否为周末
-            var lx = '0';
-            var nian = $('#nian').text();//当前年
-            var yue = $('#yue').text();//当前月
-            var dayJson = "";
-            var day = dayContainer.innerHTML;//当前日
-            var dayColor = dayContainer.attributes["color"];//如果是红色代表就是周末，没有就是工作日
-            var dayF = nian + '/' + addZ(yue) + '/' + addZ(day);
-            
-            if (dayColor && dayColor.value == 'red' && getH(dayF)) {//首先得有颜色，必须是红色，必须是周末
-                lx = '1';
-            }
-            dayJson = nian + addZ(yue) + addZ(day) ;
-            
-            if (onoff == '0') {
-                //没有选中
-                thisObj.setAttribute("class", "selday");
-                thisObj.attributes["on"].value = '1';
-                hDays.push(dayJson);
-            } else {
-                //选中的取消选中状态
-                thisObj.setAttribute("class", "");
-                thisObj.attributes["on"].value = '0';
-                delArry(hDays, dayJson);
-            }
-            i_size++;
-            if(i_size==2){
-                h_submit();
-            }
+        mOclApi();
+        var onoff = thisObj.attributes["on"].value;//获取所以属性，判断是否on的属性
+        if (onoff == '0') {
+            if(i_size==2){return}
+            //没有选中
+            thisObj.setAttribute("class", "selday");
+            thisObj.attributes["on"].value = '1';
+            hDays.push(dayJson);
+            ++i_size;
+        } else {
+            //选中的取消选中状态
+            thisObj.setAttribute("class", "");
+            thisObj.attributes["on"].value = '0';
+            delArry(hDays, dayJson);
+            --i_size;
         }
-        
     }
+
     
 
 }
@@ -909,11 +897,10 @@ $(function() {
 function h_submit(){
     if(i_startEnd=="TR"){
         if(hDays==""){
-            alert("请至少选择一个日期！");
+            alert("请选择起始时间！");
             return;
         }
         if(i_size==2){           
-            console.info(hDays);
             $("#sucaijiayuan").hide();
             $("#i_id").val(hDays);
         }else{
@@ -926,9 +913,11 @@ function h_submit(){
             return;
         }
         else{
-            console.info(hDays);
+            
             $("#sucaijiayuan").hide();
             $("#i_id").val(hDays);
+            $(".btnQX").trigger("click");
+
         }
     }       
 }
@@ -999,4 +988,20 @@ $('#jieQi').change(function(){
     $("#i_id").val(getJieQi);
 });
 
+var i_startEnd="";
+    $("#i_id").mouseover(function () { this.focus() ;});
+    $("#i_id").mouseout(function () { this.blur() ;});
+    //点击事件
+    $("#i_id").click(function (){
+        i_startEnd=$("input[name=inlineRadioOptions]:checked").attr("value")
+        $("#sucaijiayuan").show();
+        rebuild();    
+    });
+    $("#t_body").append(i_tr);
+    //选择时间类型，如果已选中，则关闭
+    $("input[name=inlineRadioOptions]").click(function (){
+        if(!$("#sucaijiayuan").is(":hidden")){
+            $("#sucaijiayuan").hide();
 
+        }
+    });
