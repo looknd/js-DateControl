@@ -165,9 +165,28 @@ function cyclical(num) {
 //===== 某年的第n个节气为几日(从0小寒起算)======重要！！！
 function sTerm(y, n) {
     var offDate = new Date((31556925974.7 * (y - 1900) + sTermInfo[n] * 60000) + Date.UTC(1900, 0, 6, 2, 5));
-    return (offDate.getUTCDate());
+    if(y==2016 && n==22){
+        return (offDate.getUTCDate()+1);       
+    }else{
+        return (offDate.getUTCDate());
+    }
+    
 }
 
+//===== 某年的第n个节气为几日(从0小寒起算)======重要！！！
+function sTerm2(y, n) {
+    var offDate = new Date((31556925974.7 * (y - 1900) + sTermInfo[n] * 60000) + Date.UTC(1900, 0, 6, 2, 5));
+    var year = offDate.getFullYear();
+    var month = offDate.getMonth()+1;    //js从0开始取 
+    month= month < 10 ? '0' + month : month;
+    var date1 = offDate.getUTCDate();
+    if(y==2016 && n==22){
+        date1 = offDate.getUTCDate()+1;    
+    }    
+    date1= date1 < 10 ? '0' + date1 : date1;
+    return year+""+month+""+date1;   
+    
+}
 //====================================== 算出农历, 传入日期控件, 返回农历日期控件
 //                                       该控件属性有 .year .month .day .isLeap
 
@@ -947,5 +966,37 @@ function painting(){
     }  
 }
 
+var province ='<option value="999">-不限-</option>';
+    province +=' <option value="2"> 立 春</option>';
+    province +=' <option value="3"> 雨 水</option>';
+    province +='<option value="4"> 惊 蛰</option>';
+    province +='<option value="5"> 春 分</option>';
+    province +='<option value="6"> 清 明</option>';
+    province +=' <option value="7"> 谷 雨</option>';
+    province +=' <option value="8"> 立 夏</option>';
+    province +=' <option value="9"> 小 满</option>';
+    province +='<option value="10"> 芒 种</option>';
+    province +='<option value="11"> 夏 至</option>';
+    province +=' <option value="12"> 小 暑</option>';
+    province +=' <option value="13"> 大 暑</option>';
+    province +=' <option value="14"> 立 秋</option>';
+    province +=' <option value="15"> 处 暑</option>';
+    province +=' <option value="16"> 白 露</option>';
+    province +=' <option value="17"> 秋 分</option>';
+    province +=' <option value="18"> 寒 露</option>';
+    province +=' <option value="19"> 霜 降</option>';
+    province +='<option value="20"> 立 冬</option>';
+    province +='<option value="21"> 小 雪</option>';
+    province +=' <option value="22"> 大 雪</option>';
+    province +=' <option value="23"> 冬 至</option>';
+    province +=' <option value="0"> 小 寒</option>';
+    province +=' <option value="1"> 大 寒</option>';
+    $("#jieQi").html(province);
+
+$('#jieQi').change(function(){
+    var myDate = new Date();    
+    var getJieQi = sTerm2(myDate.getFullYear(),$(this).children('option:selected').val());
+    $("#i_id").val(getJieQi);
+});
 
 
