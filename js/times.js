@@ -365,7 +365,7 @@
                         if (RegExp.$3 == '*') this[Number(RegExp.$2) - 1].color = 'red'
                     }
 
-                    //农历节日
+            //农历节日
             for (i in lFtv)
                 if (lFtv[i].match(/^(\d{2})(.{2})([\s\*])(.+)$/)) {
                     tmp1 = Number(RegExp.$1) - firstLM
@@ -974,7 +974,7 @@
                 i_tr += '<tr align=center height="10px" id="tt">';
                 for (var j = 0; j < 7; j++) {
                     gNum = i * 7 + j;
-                    i_tr += '<td  id="GD' + gNum + '" on="0" ><font  id="SD' + gNum + '" style="font-size:14px;"  face="Arial"';
+                    i_tr += '<td class="major" id="GD' + gNum + '" on="0" ><font  id="SD' + gNum + '" style="font-size:14px;"  face="Arial"';
                     if (j == 0) i_tr += 'color=red';
                     if (j == 6)
                         if (i % 2 == 1) i_tr += 'color=red';
@@ -1060,6 +1060,34 @@
             }
         });
 
+        //===============================
+        var clicked = "Nope.";
+        var majorObj='';
+        $(".major").mousemove(function (event) {            
+            if (clicked == "Yeah.") {
+                if(majorObj!=$(this).attr("id")){
+                    if($(this).hasClass("selday")){
+                        $(this).attr("on","0");
+                        $(this).removeClass("selday");                    
+                    }else{
+                        $(this).attr("on","1");
+                        $(this).addClass("selday");
+                    }
+                     majorObj=$(this).attr("id");
+                }
+            }
+        });
+
+        $(".major").mousedown(function (event) {
+            clicked = "Yeah.";
+           
+        });
+
+        $("html").mouseup(function (event) {
+
+            clicked = "Nope.";
+        });
+        //===============================
         var exportObj = {};
         exportObj["initialization"] = initialization;
 
