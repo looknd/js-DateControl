@@ -62,33 +62,9 @@
                 </tbody>\
               </TABLE>\
                 </form></div>";
+        var clicked = "Nope.";
+        var majorObj='';
         document.getElementById('i_div').innerHTML = i_dateHtml;
-        var province = '<option value="999">-不限-</option>';
-        province += ' <option value="2"> 立 春</option>';
-        province += ' <option value="3"> 雨 水</option>';
-        province += '<option value="4"> 惊 蛰</option>';
-        province += '<option value="5"> 春 分</option>';
-        province += '<option value="6"> 清 明</option>';
-        province += ' <option value="7"> 谷 雨</option>';
-        province += ' <option value="8"> 立 夏</option>';
-        province += ' <option value="9"> 小 满</option>';
-        province += '<option value="10"> 芒 种</option>';
-        province += '<option value="11"> 夏 至</option>';
-        province += ' <option value="12"> 小 暑</option>';
-        province += ' <option value="13"> 大 暑</option>';
-        province += ' <option value="14"> 立 秋</option>';
-        province += ' <option value="15"> 处 暑</option>';
-        province += ' <option value="16"> 白 露</option>';
-        province += ' <option value="17"> 秋 分</option>';
-        province += ' <option value="18"> 寒 露</option>';
-        province += ' <option value="19"> 霜 降</option>';
-        province += '<option value="20"> 立 冬</option>';
-        province += '<option value="21"> 小 雪</option>';
-        province += ' <option value="22"> 大 雪</option>';
-        province += ' <option value="23"> 冬 至</option>';
-        province += ' <option value="0"> 小 寒</option>';
-        province += ' <option value="1"> 大 寒</option>';
-        $("#jieQi").html(province);
 
         var lunarInfo = new Array(
             0x4bd8, 0x4ae0, 0xa570, 0x54d5, 0xd260, 0xd950, 0x5554, 0x56af, 0x9ad0, 0x55d2,
@@ -425,8 +401,11 @@
                     sObj.innerHTML = sD + 1;
                     //wly 注册点击事件
                     $("#GD" + i).unbind('click').click(function() {
+                        
+                        clicked = "s.";
                         mOck(this, sD + 1);
                     });
+
                     $("#GD" + i).attr("on", "0");
                     var nowDays = SY + '' + addZ((SM + 1)) + addZ((sD + 1));
                     var hstr = hDays.join();
@@ -546,43 +525,21 @@
                     lx = '1';
                 }
                 dayJson = nian + addZ(yue) + addZ(day);
+            }            
+            mOclApi();
+            var onoff = thisObj.attributes["on"].value; //获取所以属性，判断是否on的属性
+            if (onoff == '0') {
+                //没有选中
+                thisObj.setAttribute("class", "selday");
+                thisObj.attributes["on"].value = '1';
+                hDays.push(dayJson);
+            } else {
+                //选中的取消选中状态
+                thisObj.setAttribute("class", "");
+                thisObj.attributes["on"].value = '0';
+                delArry(hDays, dayJson);
             }
-
-            if (i_startEnd == "TP") { //时间点
-                mOclApi();
-                var onoff = thisObj.attributes["on"].value; //获取所以属性，判断是否on的属性
-                if (onoff == '0') {
-                    //没有选中
-                    thisObj.setAttribute("class", "selday");
-                    thisObj.attributes["on"].value = '1';
-                    hDays.push(dayJson);
-                } else {
-                    //选中的取消选中状态
-                    thisObj.setAttribute("class", "");
-                    thisObj.attributes["on"].value = '0';
-                    delArry(hDays, dayJson);
-                }
-            }
-            if (i_startEnd == "TR") { //时间段
-                mOclApi();
-                var onoff = thisObj.attributes["on"].value; //获取所以属性，判断是否on的属性
-                if (onoff == '0') {
-                    if (i_size == 2) {
-                        return
-                    }
-                    //没有选中
-                    thisObj.setAttribute("class", "selday");
-                    thisObj.attributes["on"].value = '1';
-                    hDays.push(dayJson);
-                    ++i_size;
-                } else {
-                    //选中的取消选中状态
-                    thisObj.setAttribute("class", "");
-                    thisObj.attributes["on"].value = '0';
-                    delArry(hDays, dayJson);
-                    --i_size;
-                }
-            }
+            
         }
 
         //删除数组指定元素
@@ -850,7 +807,7 @@
 
                 $('#SY' + this.currYear).addClass('curr');
                 $(".year").click(function() {
-                    console.info((this.id.replace('SY', '')))
+                    
                     dateSelection.setYear(this.id.replace('SY', ''));
                 });
             },
@@ -924,21 +881,7 @@
 
         //提交
         function h_submit() {
-            if (i_startEnd == "TR") {
-                if (hDays == "") {
-                    alert("请选择起始时间！");
-                    return;
-                }
-                if (i_size == 2) {
-                    $("#sucaijiayuan").hide();
-                    $("#i_div").css("z-index", "0");
-                    $("#i_id").val(hDays);
-                } else {
-                    alert("请选择终止日期!");
-                    return;
-                }
-            } else {
-                if (hDays == "") {
+           if (hDays == "") {
                     alert("请至少选择一个日期！");
                     return;
                 } else {
@@ -947,7 +890,6 @@
                     $("#i_id").val(hDays);
                     $(".btnQX").trigger("click");
 
-                }
             }
         }
 
@@ -971,7 +913,7 @@
         function painting() {
             var gNum;
             for (var i = 0; i < 6; i++) {
-                i_tr += '<tr align=center height="10px" id="tt">';
+                i_tr += '<tr align=center height="10px" id="tt" style="cursor:pointer ; -moz-user-select:-moz-none; -moz-user-select: none;-o-user-select:none;-khtml-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none;"  onselectstart="return false;">';
                 for (var j = 0; j < 7; j++) {
                     gNum = i * 7 + j;
                     i_tr += '<td class="major" id="GD' + gNum + '" on="0" ><font  id="SD' + gNum + '" style="font-size:14px;"  face="Arial"';
@@ -979,29 +921,11 @@
                     if (j == 6)
                         if (i % 2 == 1) i_tr += 'color=red';
                         else i_tr += 'color=red';
-                    i_tr += '  TITLE="">  </font><br><font  id="LD' + gNum + '"  size=2  style="white-space:nowrap;overflow:hidden;cursor:default;">  </font></td>';
+                    i_tr += '  TITLE="">  </font><br><font  id="LD' + gNum + '"  size=2  style="white-space:nowrap;overflow:hidden;"></font></td>';
                 }
                 i_tr += '</tr>';
             }
         }
-
-        $('#jieQi').change(function() {
-            i_startEnd = $("input[name=inlineRadioOptions]:checked").attr("value");
-            var myDate = new Date();
-            var jieQiVal = $(this).children('option:selected').val();
-            var getJieQi = sTerm2(myDate.getFullYear(), jieQiVal);
-            if (jieQiVal == 999) {
-                $("#i_id").val("");
-            } else {
-                if (i_startEnd == "TR") {
-                    $("#i_id").val(getJieQi + "," + getJieQi);
-                } else {
-                    $("#i_id").val(getJieQi);
-                }
-
-            }
-
-        });
 
         $(".btnTJ").click(function() {
             h_submit();
@@ -1041,52 +965,49 @@
             dateSelection.nextYearPage();
         });
 
-        var i_startEnd = "";
         $("#i_id").mouseover(function() { this.focus(); });
         $("#i_id").mouseout(function() { this.blur(); });
         //点击事件
         $("#i_id").click(function() {
-            i_startEnd = $("input[name=inlineRadioOptions]:checked").attr("value")
             $("#sucaijiayuan").show();
             $("#i_div").css("z-index", "3");
             rebuild();
         });
         $("#t_body").append(i_tr);
-        //选择时间类型，如果已选中，则关闭
-        $("input[name=inlineRadioOptions]").click(function() {
-            if (!$("#sucaijiayuan").is(":hidden")) {
-                $("#sucaijiayuan").hide();
-                $("#i_div").css("z-index", "0");
-            }
-        });
-
         //===============================
-        var clicked = "Nope.";
-        var majorObj='';
-        $(".major").mousemove(function (event) {            
-            if (clicked == "Yeah.") {
-                if(majorObj!=$(this).attr("id")){
-                    if($(this).hasClass("selday")){
-                        $(this).attr("on","0");
-                        $(this).removeClass("selday");                    
-                    }else{
-                        $(this).attr("on","1");
-                        $(this).addClass("selday");
-                    }
-                     majorObj=$(this).attr("id");
-                }
-            }
+        $(".major").bind('contextmenu',function(){
+            return false;
         });
-
-        $(".major").mousedown(function (event) {
-            clicked = "Yeah.";
-           
+        // $(".major").mousemove(function (event) {
+        //     if (clicked == "Yeah.") {
+                        
+        //         if(majorObj!=$(this).attr("id")){
+        //             if($(this).hasClass("selday")){
+                        
+        //                 $(this).attr("on","0");
+        //                 $(this).removeClass("selday");                    
+        //             }else{
+                       
+        //                 $(this).attr("on","1");
+        //                 $(this).addClass("selday");
+        //             }
+        //             majorObj=$(this).attr("id");
+        //         }
+        //    }
+        // });  
+         
+        $(".major").mousedown(function (event) {                      
+            if(3 == event.which){ 
+               clicked = "Yeah.";
+               majorObj=$(this).attr("id");
+              
+            }           
         });
-
         $("html").mouseup(function (event) {
-
+             
             clicked = "Nope.";
         });
+
         //===============================
         var exportObj = {};
         exportObj["initialization"] = initialization;
